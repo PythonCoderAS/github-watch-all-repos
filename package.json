@@ -52,7 +52,7 @@
   "oclif": {
     "bin": "github-watch-all-repos",
     "dirname": "github-watch-all-repos",
-    "commands": "./dist/commands",
+    "commands": "./dist",
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-plugins"
