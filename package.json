@@ -30,7 +30,7 @@
   "dependencies": {
     "@oclif/core": "^1",
     "@oclif/plugin-help": "^5",
-    "@oclif/plugin-plugins": "^2.0.1"
+    "dotenv": "^16.0.1"
   },
   "devDependencies": {
     "@oclif/test": "^2",
@@ -52,10 +52,9 @@
   "oclif": {
     "bin": "github-watch-all-repos",
     "dirname": "github-watch-all-repos",
-    "commands": "./dist",
+    "commands": "./dist/commands",
     "plugins": [
-      "@oclif/plugin-help",
-      "@oclif/plugin-plugins"
+      "@oclif/plugin-help"
     ],
     "topicSeparator": " "
   },
