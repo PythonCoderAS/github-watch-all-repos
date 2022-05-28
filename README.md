@@ -7,6 +7,7 @@ Watch all repositories belonging to an individual user/organization.
 ```shell
 npm install -g github-watch-all-repos
 GITHUB_TOKEN="<your-github-token>" github-watch-all-repos user <userToWatch>
+# Alternatively: GITHUB_TOKEN="<your-github-token>" github-watch-all-repos organization <orgToWatch>
 ```
 
 ## Features
