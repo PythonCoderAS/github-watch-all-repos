@@ -88,5 +88,5 @@ DESCRIPTION
   Watch all repositories under a personal user account.
 ```
 
-_See code: [dist/commands/user.ts](https://github.com/PythonCoderAS/github-watch-all-repos/blob/v1.0.0/dist/commands/user.ts)_
+_See code: [dist/commands/user.test.ts](https://github.com/PythonCoderAS/github-watch-all-repos/blob/v1.0.0/dist/commands/user.ts)_
 <!-- commandsstop -->

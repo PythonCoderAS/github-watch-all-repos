@@ -91,9 +91,20 @@ export class RepoClient {
         });
     }
 
+    private getActionVerb(): string {
+        switch (this.mode) {
+            case "watch":
+                return "Watching";
+            case "unwatch":
+                return "Unwatching";
+            case "ignore":
+                return "Ignoring";
+        }
+    }
+
     async main(): Promise<void> {
         const repos = await this.getRepos();
-        console.log(`Found ${repos.length} repositories. This may take a while.`);
+        console.log(`${this.getActionVerb()} ${repos.length} repositories. This may take a while.`);
         const promises = repos.map(async (repo) => {
             switch (this.mode) {
                 case "watch":

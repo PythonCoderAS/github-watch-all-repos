@@ -1,5 +1,4 @@
-// Renamed from init.js
-import { resolve } from 'path';
+const {resolve} = require('path');
 process.env.TS_NODE_PROJECT = resolve('test/tsconfig.json')
 process.env.NODE_ENV = 'development'
 
