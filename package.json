@@ -45,6 +45,7 @@
         "eslint": "^8.16.0",
         "mocha": "^10.0.0",
         "oclif": "^3.0.1",
+        "prettier": "^2.6.2",
         "shx": "^0.3.4",
         "ts-node": "^10.8.0",
         "tslib": "^2.4.0",
@@ -62,7 +63,8 @@
     },
     "scripts": {
         "build": "shx rm -rf dist && tsc -b",
-        "lint": "eslint . --ext .ts --config .eslintrc",
+        "lint": "prettier --check . && eslint . --ext .ts --config .eslintrc",
+        "lint-fix": "prettier --write . && eslint . --ext .ts --config .eslintrc --fix",
         "postpack": "shx rm -f oclif.manifest.json",
         "prepack": "npm run build && oclif manifest && oclif readme",
         "test": "mocha --forbid-only \"test/**/*.test.ts\"",
