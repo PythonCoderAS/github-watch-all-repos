@@ -35,12 +35,14 @@ export class RepoClient {
         if (this.isUser) {
             return await this.octokit.paginate(this.octokit.repos.listForUser, {
                 username: this.username,
-                per_page: 100
+                per_page: 100,
+                type: "all"
             })
         } else {
             return await this.octokit.paginate(this.octokit.repos.listForOrg, {
                 org: this.username,
-                per_page: 100
+                per_page: 100,
+                type: "all"
             });
         }
     }
