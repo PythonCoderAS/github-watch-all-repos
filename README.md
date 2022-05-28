@@ -1,9 +1,11 @@
 # github-watch-all-repos
+
 Watch all repositories belonging to an individual user/organization.
 
 # Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g github-watch-all-repos
 $ github-watch-all-repos COMMAND
@@ -15,14 +17,16 @@ USAGE
   $ github-watch-all-repos COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-* [`github-watch-all-repos help [COMMAND]`](#github-watch-all-repos-help-command)
-* [`github-watch-all-repos organization USERNAME`](#github-watch-all-repos-organization-username)
-* [`github-watch-all-repos user USERNAME`](#github-watch-all-repos-user-username)
+
+- [`github-watch-all-repos help [COMMAND]`](#github-watch-all-repos-help-command)
+- [`github-watch-all-repos organization USERNAME`](#github-watch-all-repos-organization-username)
+- [`github-watch-all-repos user USERNAME`](#github-watch-all-repos-user-username)
 
 ## `github-watch-all-repos help [COMMAND]`
 
@@ -89,4 +93,5 @@ DESCRIPTION
 ```
 
 _See code: [dist/commands/user.test.ts](https://github.com/PythonCoderAS/github-watch-all-repos/blob/v1.0.0/dist/commands/user.ts)_
+
 <!-- commandsstop -->

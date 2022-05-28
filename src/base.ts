@@ -1,6 +1,6 @@
-import {Command, Flags} from '@oclif/core'
-import 'dotenv/config'
-import {RepoClient, RepoClientMode} from './repo-client'
+import { Command, Flags } from "@oclif/core";
+import "dotenv/config";
+import { RepoClient, RepoClientMode } from "./repo-client";
 
 export default abstract class GithubWatchAllRepos extends Command {
   /**
@@ -10,15 +10,26 @@ export default abstract class GithubWatchAllRepos extends Command {
   abstract user: boolean;
 
   static flags = {
-    version: Flags.version({char: 'v'}),
-    help: Flags.help({char: 'h'}),
-    token: Flags.string({char: 't', description: 'Github personal access token to use.'}),
-    unwatch: Flags.boolean({description: 'Unwatch all repositories.'}),
-    watch: Flags.boolean({description: 'Watch all repositories (the default).'}),
-    ignore: Flags.boolean({description: 'Ignore all repositories.'}),
-  }
+    version: Flags.version({ char: "v" }),
+    help: Flags.help({ char: "h" }),
+    token: Flags.string({
+      char: "t",
+      description: "Github personal access token to use.",
+    }),
+    unwatch: Flags.boolean({ description: "Unwatch all repositories." }),
+    watch: Flags.boolean({
+      description: "Watch all repositories (the default).",
+    }),
+    ignore: Flags.boolean({ description: "Ignore all repositories." }),
+  };
 
-  static args = [{name: 'username', description: 'The username of the user/organization to watch.', required: true}]
+  static args = [
+    {
+      name: "username",
+      description: "The username of the user/organization to watch.",
+      required: true,
+    },
+  ];
 
   /**
    * Get the token from the flags or from the environment.
@@ -28,14 +39,16 @@ export default abstract class GithubWatchAllRepos extends Command {
    */
   protected getToken(flags: { token?: string }): string {
     if (flags.token) {
-      return flags.token
+      return flags.token;
     }
 
     if (process.env.GITHUB_TOKEN) {
-      return process.env.GITHUB_TOKEN
+      return process.env.GITHUB_TOKEN;
     }
 
-    this.error('You must provide a personal access token with the --token flag or set the GITHUB_TOKEN environment variable.')
+    this.error(
+      "You must provide a personal access token with the --token flag or set the GITHUB_TOKEN environment variable."
+    );
   }
 
   /**
@@ -44,41 +57,49 @@ export default abstract class GithubWatchAllRepos extends Command {
    * @return The mode.
    * @protected
    */
-  protected getMode(flags: { unwatch?: boolean, watch?: boolean, ignore?: boolean }): RepoClientMode {
-    let watchExists = flags.watch !== undefined
-    const unwatchExists = flags.unwatch !== undefined
-    const ignoreExists = flags.ignore !== undefined
-    if ([watchExists, unwatchExists, ignoreExists].filter(x => x).length > 1) {
-      this.error('You must only provide one of --watch, --unwatch, or --ignore.')
+  protected getMode(flags: {
+    unwatch?: boolean;
+    watch?: boolean;
+    ignore?: boolean;
+  }): RepoClientMode {
+    let watchExists = flags.watch !== undefined;
+    const unwatchExists = flags.unwatch !== undefined;
+    const ignoreExists = flags.ignore !== undefined;
+    if (
+      [watchExists, unwatchExists, ignoreExists].filter((x) => x).length > 1
+    ) {
+      this.error(
+        "You must only provide one of --watch, --unwatch, or --ignore."
+      );
     } else if (!watchExists && !unwatchExists && !ignoreExists) {
-      watchExists = true
+      watchExists = true;
     }
 
-    let mode: RepoClientMode
+    let mode: RepoClientMode;
     if (watchExists) {
-      mode = 'watch'
+      mode = "watch";
     } else if (unwatchExists) {
-      mode = 'unwatch'
+      mode = "unwatch";
     } else if (ignoreExists) {
-      mode = 'ignore'
+      mode = "ignore";
     } else {
-      throw new Error('Unreachable if statement.')
+      throw new Error("Unreachable if statement.");
     }
 
-    return mode
+    return mode;
   }
 
   async run(obj: typeof GithubWatchAllRepos = GithubWatchAllRepos) {
-    const {args, flags} = await this.parse(obj)
-    const token = this.getToken(flags)
-    const mode = this.getMode(flags)
+    const { args, flags } = await this.parse(obj);
+    const token = this.getToken(flags);
+    const mode = this.getMode(flags);
     const client = new RepoClient({
       isUser: this.user,
       username: args.username,
       token,
       mode,
       flags,
-    })
-    await client.main()
+    });
+    await client.main();
   }
 }

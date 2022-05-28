@@ -5,13 +5,12 @@ name: Node.js Lint
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
@@ -22,7 +21,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
+          cache: "npm"
       - run: npm ci
       - run: npm run build
       - run: npm run lint

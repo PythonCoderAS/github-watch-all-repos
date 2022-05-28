@@ -1,48 +1,48 @@
-import {Octokit} from '@octokit/rest'
+import { Octokit } from "@octokit/rest";
 
-export type RepoClientMode = 'watch' | 'unwatch' | 'ignore';
+export type RepoClientMode = "watch" | "unwatch" | "ignore";
 
 /**
  * Parameters to pass to {@link RepoClient}.
  */
 export interface RepoClientConstructorOptions {
-    username: string;
-    token: string;
-    isUser: boolean;
-    mode: RepoClientMode;
-    /**
-     * Direct pass-through since these flags are specific to user/organization mode
-     */
-    flags?: { collaborator?: boolean, [key: string]: any } // We need [key: string]: any to stop TS errors.
+  username: string;
+  token: string;
+  isUser: boolean;
+  mode: RepoClientMode;
+  /**
+   * Direct pass-through since these flags are specific to user/organization mode
+   */
+  flags?: { collaborator?: boolean; [key: string]: any }; // We need [key: string]: any to stop TS errors.
 }
 
 /**
  * An interface for expected return data from Octokit repository listing methods.
  */
 export interface RepoData {
-    name: string,
-    owner: { login: string }
+  name: string;
+  owner: { login: string };
 }
 
 /**
  * A class to make it easier to work with the octokit library. This stores the username and token for future use.
  */
 export class RepoClient {
-  username: string
-  octokit: Octokit
-  isUser: boolean
-  mode: RepoClientMode
-  collaborator: boolean
+  username: string;
+  octokit: Octokit;
+  isUser: boolean;
+  mode: RepoClientMode;
+  collaborator: boolean;
 
   constructor(params: RepoClientConstructorOptions) {
-    this.username = params.username
+    this.username = params.username;
     this.octokit = new Octokit({
       auth: params.token,
-      userAgent: 'github-watch-all-repos',
-    })
-    this.isUser = params.isUser
-    this.mode = params.mode
-    this.collaborator = params.flags?.collaborator ?? false
+      userAgent: "github-watch-all-repos",
+    });
+    this.isUser = params.isUser;
+    this.mode = params.mode;
+    this.collaborator = params.flags?.collaborator ?? false;
   }
 
   /**
@@ -56,16 +56,16 @@ export class RepoClient {
         username: this.username,
         // eslint-disable-next-line camelcase -- Octokit API
         per_page: 100,
-        type: this.collaborator ? 'all' : 'owner',
-      })
+        type: this.collaborator ? "all" : "owner",
+      });
     }
 
     return this.octokit.paginate(this.octokit.repos.listForOrg, {
       org: this.username,
       // eslint-disable-next-line camelcase -- Octokit API
       per_page: 100,
-      type: 'all',
-    })
+      type: "all",
+    });
   }
 
   async watchRepo(repo: RepoData): Promise<void> {
@@ -73,7 +73,7 @@ export class RepoClient {
       owner: repo.owner.login,
       repo: repo.name,
       subscribed: true,
-    })
+    });
   }
 
   async unwatchRepo(repo: RepoData): Promise<void> {
@@ -82,7 +82,7 @@ export class RepoClient {
       repo: repo.name,
       subscribed: false,
       ignored: false,
-    })
+    });
   }
 
   async ignoreRepo(repo: RepoData): Promise<void> {
@@ -90,36 +90,40 @@ export class RepoClient {
       owner: repo.owner.login,
       repo: repo.name,
       ignored: true,
-    })
+    });
   }
 
   private getActionVerb(): string {
     switch (this.mode) {
-    case 'watch':
-      return 'Watching'
-    case 'unwatch':
-      return 'Unwatching'
-    case 'ignore':
-      return 'Ignoring'
+      case "watch":
+        return "Watching";
+      case "unwatch":
+        return "Unwatching";
+      case "ignore":
+        return "Ignoring";
     }
   }
 
   async main(): Promise<void> {
-    const repos = await this.getRepos()
-    console.log(`${this.getActionVerb()} ${repos.length} repositories. This may take a while.`)
-    const promises = repos.map(async repo => {
+    const repos = await this.getRepos();
+    console.log(
+      `${this.getActionVerb()} ${
+        repos.length
+      } repositories. This may take a while.`
+    );
+    const promises = repos.map(async (repo) => {
       switch (this.mode) {
-      case 'watch':
-        await this.watchRepo(repo)
-        break
-      case 'unwatch':
-        await this.unwatchRepo(repo)
-        break
-      case 'ignore':
-        await this.ignoreRepo(repo)
-        break
+        case "watch":
+          await this.watchRepo(repo);
+          break;
+        case "unwatch":
+          await this.unwatchRepo(repo);
+          break;
+        case "ignore":
+          await this.ignoreRepo(repo);
+          break;
       }
-    })
-    await Promise.all(promises)
+    });
+    await Promise.all(promises);
   }
 }
