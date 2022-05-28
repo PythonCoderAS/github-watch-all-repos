@@ -1,12 +1,23 @@
-import { Octokit } from '@octokit/rest';
+import {Octokit} from '@octokit/rest';
 
 export type RepoClientMode = "watch" | "unwatch" | "ignore";
 
+/**
+ * Parameters to pass to {@link RepoClient}.
+ */
 export interface RepoClientConstructorOptions {
     username: string;
     token: string;
     isUser: boolean;
     mode: RepoClientMode;
+}
+
+/**
+ * An interface for expected return data from Octokit repository listing methods.
+ */
+export interface RepoData {
+    name: string,
+    owner: { login: string }
 }
 
 /**
@@ -29,9 +40,9 @@ export class RepoClient {
 
     /**
      * Get a list of repositories for the user/org.
-     * We only care about the name attribute so there's no point in specifying any other properties.
+     * We only care about the name and owner attributes so there's no point in specifying any other properties.
      */
-    async getRepos(): Promise<{ name: string }[]> {
+    async getRepos(): Promise<RepoData[]> {
         if (this.isUser) {
             return await this.octokit.paginate(this.octokit.repos.listForUser, {
                 username: this.username,
@@ -47,27 +58,27 @@ export class RepoClient {
         }
     }
 
-    async watchRepo(repo: string): Promise<void> {
+    async watchRepo(repo: RepoData): Promise<void> {
         await this.octokit.activity.setRepoSubscription({
-            owner: this.username,
-            repo: repo,
+            owner: repo.owner.login,
+            repo: repo.name,
             subscribed: true
         });
     }
 
-    async unwatchRepo(repo: string): Promise<void> {
+    async unwatchRepo(repo: RepoData): Promise<void> {
         await this.octokit.activity.setRepoSubscription({
-            owner: this.username,
-            repo: repo,
+            owner: repo.owner.login,
+            repo: repo.name,
             subscribed: false,
             ignored: false
         });
     }
 
-    async ignoreRepo(repo: string): Promise<void> {
+    async ignoreRepo(repo: RepoData): Promise<void> {
         await this.octokit.activity.setRepoSubscription({
-            owner: this.username,
-            repo: repo,
+            owner: repo.owner.login,
+            repo: repo.name,
             ignored: true
         });
     }
@@ -78,13 +89,13 @@ export class RepoClient {
         const promises = repos.map(async (repo) => {
             switch (this.mode) {
                 case "watch":
-                    await this.watchRepo(repo.name);
+                    await this.watchRepo(repo);
                     break;
                 case "unwatch":
-                    await this.unwatchRepo(repo.name);
+                    await this.unwatchRepo(repo);
                     break;
                 case "ignore":
-                    await this.ignoreRepo(repo.name);
+                    await this.ignoreRepo(repo);
                     break;
             }
         });
