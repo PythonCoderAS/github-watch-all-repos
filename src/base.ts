@@ -58,15 +58,16 @@ export default abstract class GithubWatchAllRepos extends Command {
         return mode;
     }
 
-    async run() {
-        const {args, flags} = await this.parse(GithubWatchAllRepos)
+    async run(obj: typeof GithubWatchAllRepos = GithubWatchAllRepos) {
+        const {args, flags} = await this.parse(obj)
         const token = this.getToken(flags)
         const mode = this.getMode(flags)
         const client = new RepoClient({
             isUser: this.user,
             username: args.username,
             token,
-            mode
+            mode,
+            flags
         });
         return await client.main()
     }

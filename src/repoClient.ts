@@ -1,4 +1,5 @@
 import {Octokit} from '@octokit/rest';
+import {version} from './package.json';
 
 export type RepoClientMode = "watch" | "unwatch" | "ignore";
 
@@ -10,6 +11,10 @@ export interface RepoClientConstructorOptions {
     token: string;
     isUser: boolean;
     mode: RepoClientMode;
+    /**
+     * Direct pass-through since these flags are specific to user/organization mode
+     */
+    flags?: { collaborator?: boolean, [key: string]: any } // We need [key: string]: any to stop TS errors.
 }
 
 /**
@@ -28,14 +33,18 @@ export class RepoClient {
     octokit: Octokit;
     isUser: boolean;
     mode: RepoClientMode;
+    collaborator: boolean
+
 
     constructor(params: RepoClientConstructorOptions) {
         this.username = params.username;
         this.octokit = new Octokit({
-            auth: params.token
+            auth: params.token,
+            userAgent: `github-watch-all-repos v${version}`
         });
         this.isUser = params.isUser;
         this.mode = params.mode;
+        this.collaborator = params.flags?.collaborator ?? false;
     }
 
     /**
@@ -47,7 +56,7 @@ export class RepoClient {
             return await this.octokit.paginate(this.octokit.repos.listForUser, {
                 username: this.username,
                 per_page: 100,
-                type: "all"
+                type: this.collaborator ? "all" : "owner"
             })
         } else {
             return await this.octokit.paginate(this.octokit.repos.listForOrg, {
