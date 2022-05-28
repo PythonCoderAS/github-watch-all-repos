@@ -2,96 +2,46 @@
 
 Watch all repositories belonging to an individual user/organization.
 
-# Usage
+## Quickstart
 
-<!-- usage -->
-
-```sh-session
-$ npm install -g github-watch-all-repos
-$ github-watch-all-repos COMMAND
-running command...
-$ github-watch-all-repos (--version)
-github-watch-all-repos/1.0.0 darwin-x64 node-v18.2.0
-$ github-watch-all-repos --help [COMMAND]
-USAGE
-  $ github-watch-all-repos COMMAND
-...
+```shell
+npm install -g github-watch-all-repos
+GITHUB_TOKEN="<your-github-token>" github-watch-all-repos user <userToWatch>
 ```
 
-<!-- usagestop -->
+## Features
 
-# Commands
+### Tokens
 
-<!-- commands -->
+Tokens need to be github private access tokens with the `repo` and `notifications` scopes. If you do not want to follow
+any private repos, then the `public_repo` scope and `notifications` sufficies.
 
-- [`github-watch-all-repos help [COMMAND]`](#github-watch-all-repos-help-command)
-- [`github-watch-all-repos organization USERNAME`](#github-watch-all-repos-organization-username)
-- [`github-watch-all-repos user USERNAME`](#github-watch-all-repos-user-username)
+Tokens can either be given via the `--token` argument or via the `GITHUB_TOKEN` environment variable. Alternatively,
+a `.env` file with `GITHUB_TOKEN=<token>` can also be created; see [dotenv](https://github.com/motdotla/dotenv) for more
+information.
 
-## `github-watch-all-repos help [COMMAND]`
+### User/Organization
 
-Display help for github-watch-all-repos.
+There is one command for watching users and one command for watching organizations. A user cannot be supplied to the
+organization command or vice versa, otherwise an NotFoundError will occur.
 
-```
-USAGE
-  $ github-watch-all-repos help [COMMAND] [-n]
+#### User Mode: Collaborators
 
-ARGUMENTS
-  COMMAND  Command to show help for.
+User mode contains an additional configuration option, `--collaborator` that works when the supplied user is the same
+user that created the token the client is using. Specifiyng this option will cause the client to watch all repositories
+that the user is a collaborator on.
 
-FLAGS
-  -n, --nested-commands  Include all nested commands in the output.
+### Modes
 
-DESCRIPTION
-  Display help for github-watch-all-repos.
-```
+The client can operate in one of three modes:
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.12/src/commands/help.ts)_
+* `--watch`: Watch all repositories belonging to the user/organization. This is the default operation.
+* `--unwatch`: Unwatch all repositories belonging to the user/organization.
+* `--ignore`: Ignore all repositories belonging to the user/organization.
 
-## `github-watch-all-repos organization USERNAME`
+The mode can be specified as a command line flag. Only one mode may be specified at a time.
 
-Watch all repositories under an organization.
+### Private Repos
 
-```
-USAGE
-  $ github-watch-all-repos organization [USERNAME] [-v] [-h] [-t <value>] [--unwatch]
-
-ARGUMENTS
-  USERNAME  The username of the organization to watch.
-
-FLAGS
-  -h, --help           Show CLI help.
-  -t, --token=<value>  Github personal access token to use.
-  -v, --version        Show CLI version.
-  --unwatch            Unwatch all repositories instead of watching them.
-
-DESCRIPTION
-  Watch all repositories under an organization.
-```
-
-_See code: [dist/commands/organization.ts](https://github.com/PythonCoderAS/github-watch-all-repos/blob/v1.0.0/dist/commands/organization.ts)_
-
-## `github-watch-all-repos user USERNAME`
-
-Watch all repositories under a personal user account.
-
-```
-USAGE
-  $ github-watch-all-repos user [USERNAME] [-v] [-h] [-t <value>] [--unwatch]
-
-ARGUMENTS
-  USERNAME  The username of the user to watch.
-
-FLAGS
-  -h, --help           Show CLI help.
-  -t, --token=<value>  Github personal access token to use.
-  -v, --version        Show CLI version.
-  --unwatch            Unwatch all repositories instead of watching them.
-
-DESCRIPTION
-  Watch all repositories under a personal user account.
-```
-
-_See code: [dist/commands/user.test.ts](https://github.com/PythonCoderAS/github-watch-all-repos/blob/v1.0.0/dist/commands/user.ts)_
-
-<!-- commandsstop -->
+Private repositories are included by default. In order to exclude them from the watch list, the `--no-private` option
+can be supplied.

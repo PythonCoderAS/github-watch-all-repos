@@ -1,4 +1,5 @@
 import { Octokit } from "@octokit/rest";
+import GithubWatchAllRepos from "./base";
 
 export type RepoClientMode = "watch" | "unwatch" | "ignore";
 
@@ -14,6 +15,8 @@ export interface RepoClientConstructorOptions {
    * Direct pass-through since these flags are specific to user/organization mode
    */
   flags?: { collaborator?: boolean; [key: string]: any }; // We need [key: string]: any to stop TS errors.
+  command: GithubWatchAllRepos;
+  private: boolean;
 }
 
 /**
@@ -22,6 +25,7 @@ export interface RepoClientConstructorOptions {
 export interface RepoData {
   name: string;
   owner: { login: string };
+  private: boolean;
 }
 
 /**
@@ -33,6 +37,8 @@ export class RepoClient {
   isUser: boolean;
   mode: RepoClientMode;
   collaborator: boolean;
+  command: GithubWatchAllRepos
+  privateRepos: boolean
 
   constructor(params: RepoClientConstructorOptions) {
     this.username = params.username;
@@ -43,6 +49,8 @@ export class RepoClient {
     this.isUser = params.isUser;
     this.mode = params.mode;
     this.collaborator = params.flags?.collaborator ?? false;
+    this.command = params.command;
+    this.privateRepos = params.private;
   }
 
   /**
@@ -105,23 +113,55 @@ export class RepoClient {
   }
 
   async main(): Promise<void> {
-    const repos = await this.getRepos();
+    let repos: RepoData[];
+    try {
+      repos = await this.getRepos();
+    } catch (e: any) {
+      if (e !== undefined && e.name === "HttpError") {
+        switch (e.status) {
+          case 401:
+            return this.command.error("Invalid GITHUB_TOKEN, please check your environment variables.");
+          case 404:
+            return this.command.error(`Could not find ${this.isUser ? 'user' : 'organization'} ${this.username}.`);
+          default:
+            throw e;
+        }
+      }
+      throw e;
+    }
+    if (!this.privateRepos){
+      repos = repos.filter((repo) => !repo.private);
+    }
     console.log(
       `${this.getActionVerb()} ${
         repos.length
       } repositories. This may take a while.`
     );
     const promises = repos.map(async (repo) => {
-      switch (this.mode) {
-        case "watch":
-          await this.watchRepo(repo);
-          break;
-        case "unwatch":
-          await this.unwatchRepo(repo);
-          break;
-        case "ignore":
-          await this.ignoreRepo(repo);
-          break;
+      try {
+        switch (this.mode) {
+          case "watch":
+            await this.watchRepo(repo);
+            break;
+          case "unwatch":
+            await this.unwatchRepo(repo);
+            break;
+          case "ignore":
+            await this.ignoreRepo(repo);
+            break;
+        }
+      } catch (e: any) {
+        if (e !== undefined && e.name === "HttpError") {
+          switch (e.status) {
+            case 403:
+              return this.command.error(`You do not have permission to ${this.mode} ${repo.owner}/${repo.name}.`);
+            case 404:
+              return this.command.error(`Could not find ${repo.owner}/${repo.name}. The repository may have been deleted.`);
+            default:
+              throw e;
+          }
+        }
+        throw e;
       }
     });
     await Promise.all(promises);
