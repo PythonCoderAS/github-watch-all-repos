@@ -1,5 +1,4 @@
 import {Octokit} from '@octokit/rest';
-import {version} from './package.json';
 
 export type RepoClientMode = "watch" | "unwatch" | "ignore";
 
@@ -40,7 +39,7 @@ export class RepoClient {
         this.username = params.username;
         this.octokit = new Octokit({
             auth: params.token,
-            userAgent: `github-watch-all-repos v${version}`
+            userAgent: 'github-watch-all-repos'
         });
         this.isUser = params.isUser;
         this.mode = params.mode;
