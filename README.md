@@ -29,7 +29,7 @@ organization command or vice versa, otherwise an NotFoundError will occur.
 #### User Mode: Collaborators
 
 User mode contains an additional configuration option, `--collaborator` that works when the supplied user is the same
-user that created the token the client is using. Specifiyng this option will cause the client to watch all repositories
+user that created the token the client is using. Specifying this option will cause the client to watch all repositories
 that the user is a collaborator on.
 
 ### Modes
