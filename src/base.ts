@@ -100,7 +100,8 @@ export default abstract class GithubWatchAllRepos extends Command {
       token,
       mode,
       flags,
-      command: this
+      command: this,
+      private: !flags["no-private"]
     });
     await client.main();
   }
