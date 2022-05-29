@@ -164,11 +164,11 @@ export class RepoClient {
           switch (error.status) {
             case 403:
               return this.command.error(
-                `You do not have permission to ${this.mode} ${repo.owner}/${repo.name}.`
+                `You do not have permission to ${this.mode} ${repo.owner.login}/${repo.name}.`
               );
             case 404:
               return this.command.error(
-                `Could not find ${repo.owner}/${repo.name}. The repository may have been deleted.`
+                `Could not find ${repo.owner.login}/${repo.name}. The repository may have been deleted.`
               );
             default:
               throw error;
