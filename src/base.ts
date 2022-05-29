@@ -105,6 +105,12 @@ export default abstract class GithubWatchAllRepos extends Command {
       command: this,
       private: !flags["no-private"],
     });
-    await client.main();
+    try {
+      await client.main();
+    } catch (error: any) {
+      if (error !== undefined && error.name === "HttpError") {
+        return this.error(error.message);
+      }
+    }
   }
 }

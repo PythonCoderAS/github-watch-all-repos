@@ -113,29 +113,7 @@ export class RepoClient {
   }
 
   async main(): Promise<void> {
-    let repos: RepoData[];
-    try {
-      repos = await this.getRepos();
-    } catch (error: any) {
-      if (error !== undefined && error.name === "HttpError") {
-        switch (error.status) {
-          case 401:
-            return this.command.error(
-              "Invalid GITHUB_TOKEN, please check your environment variables."
-            );
-          case 404:
-            return this.command.error(
-              `Could not find ${this.isUser ? "user" : "organization"} ${
-                this.username
-              }.`
-            );
-          default:
-            throw error;
-        }
-      }
-
-      throw error;
-    }
+    let repos: RepoData[] = await this.getRepos();
 
     if (!this.privateRepos) {
       repos = repos.filter((repo) => !repo.private);
@@ -147,35 +125,16 @@ export class RepoClient {
       } repositories. This may take a while.`
     );
     const promises = repos.map(async (repo) => {
-      try {
-        switch (this.mode) {
-          case "watch":
-            await this.watchRepo(repo);
-            break;
-          case "unwatch":
-            await this.unwatchRepo(repo);
-            break;
-          case "ignore":
-            await this.ignoreRepo(repo);
-            break;
-        }
-      } catch (error: any) {
-        if (error !== undefined && error.name === "HttpError") {
-          switch (error.status) {
-            case 403:
-              return this.command.error(
-                `You do not have permission to ${this.mode} ${repo.owner.login}/${repo.name}.`
-              );
-            case 404:
-              return this.command.error(
-                `Could not find ${repo.owner.login}/${repo.name}. The repository may have been deleted.`
-              );
-            default:
-              throw error;
-          }
-        }
-
-        throw error;
+      switch (this.mode) {
+        case "watch":
+          await this.watchRepo(repo);
+          break;
+        case "unwatch":
+          await this.unwatchRepo(repo);
+          break;
+        case "ignore":
+          await this.ignoreRepo(repo);
+          break;
       }
     });
     await Promise.all(promises);
