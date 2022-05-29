@@ -36,9 +36,9 @@ that the user is a collaborator on.
 
 The client can operate in one of three modes:
 
-* `--watch`: Watch all repositories belonging to the user/organization. This is the default operation.
-* `--unwatch`: Unwatch all repositories belonging to the user/organization.
-* `--ignore`: Ignore all repositories belonging to the user/organization.
+- `--watch`: Watch all repositories belonging to the user/organization. This is the default operation.
+- `--unwatch`: Unwatch all repositories belonging to the user/organization.
+- `--ignore`: Ignore all repositories belonging to the user/organization.
 
 The mode can be specified as a command line flag. Only one mode may be specified at a time.
 

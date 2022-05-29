@@ -21,7 +21,9 @@ export default abstract class GithubWatchAllRepos extends Command {
       description: "Watch all repositories (the default).",
     }),
     ignore: Flags.boolean({ description: "Ignore all repositories." }),
-    "no-private": Flags.boolean({description: "Do not watch private repositories."}),
+    "no-private": Flags.boolean({
+      description: "Do not watch private repositories.",
+    }),
   };
 
   static args = [
@@ -101,7 +103,7 @@ export default abstract class GithubWatchAllRepos extends Command {
       mode,
       flags,
       command: this,
-      private: !flags["no-private"]
+      private: !flags["no-private"],
     });
     await client.main();
   }
