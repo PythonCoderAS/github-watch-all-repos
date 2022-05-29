@@ -1,6 +1,6 @@
 {
   "name": "github-watch-all-repos",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Watch all repositories belonging to an individual user/organization.",
   "author": "PythonCoderAS",
   "bin": {
