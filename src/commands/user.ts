@@ -10,7 +10,7 @@ export default class GithubWatchAllUserRepos extends GithubWatchAllRepos {
     ...GithubWatchAllRepos.flags,
     collaborator: Flags.boolean({
       description:
-        "Watch all repositories that the user is a collaborator on (only usable if the specificed user is the authenticated user).",
+        "Watch all repositories that the user is a collaborator on (only usable if the specified user is the authenticated user).",
       default: false,
     }),
   };

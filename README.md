@@ -14,8 +14,8 @@ GITHUB_TOKEN="<your-github-token>" github-watch-all-repos user <userToWatch>
 
 ### Tokens
 
-Tokens need to be github private access tokens with the `repo` and `notifications` scopes. If you do not want to follow
-any private repos, then the `public_repo` scope and `notifications` sufficies.
+Tokens need to be GitHub private access tokens with the `repo` and `notifications` scopes. If you do not want to follow
+any private repos, then the `public_repo` scope and `notifications` suffices.
 
 Tokens can either be given via the `--token` argument or via the `GITHUB_TOKEN` environment variable. Alternatively,
 a `.env` file with `GITHUB_TOKEN=<token>` can also be created; see [dotenv](https://github.com/motdotla/dotenv) for more
