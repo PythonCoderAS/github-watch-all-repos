@@ -109,7 +109,7 @@ export default abstract class GithubWatchAllRepos extends Command {
       await client.main();
     } catch (error: any) {
       if (error !== undefined && error.name === "HttpError") {
-        return this.error(error.message);
+        this.error(error.message);
       }
     }
   }
