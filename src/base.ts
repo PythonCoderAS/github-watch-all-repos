@@ -69,7 +69,7 @@ export default abstract class GithubWatchAllRepos extends Command {
     const unwatchExists = flags.unwatch !== undefined;
     const ignoreExists = flags.ignore !== undefined;
     if (
-      [watchExists, unwatchExists, ignoreExists].filter((x) => x).length > 1
+      [watchExists, unwatchExists, ignoreExists].filter(Boolean).length > 1
     ) {
       this.error(
         "You must only provide one of --watch, --unwatch, or --ignore."
