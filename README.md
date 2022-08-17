@@ -1,5 +1,9 @@
 # github-watch-all-repos
 
+> ⚠️ **Deprecated** ⚠️
+> 
+> Superseded by [`gh-all-repos watch/unwatch/ignore`](https://github.com/PythonCoderAS/gh-all-repos).
+
 Watch all repositories belonging to an individual user/organization.
 
 ## Quickstart
